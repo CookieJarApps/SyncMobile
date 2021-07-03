@@ -332,9 +332,9 @@ export class WebExtBackgroundService {
         .init()
         .then(() =>
           this.$q.all([
-            this.storeSvc.set(StoreKey.DisplayOtherSyncsWarning, true),
-            this.storeSvc.set(StoreKey.DisplayPermissions, true),
-            this.storeSvc.set(StoreKey.SyncBookmarksToolbar, true)
+            this.storeSvc.set(StoreKey.DisplayOtherSyncsWarning, false),
+            this.storeSvc.set(StoreKey.DisplayPermissions, false),
+            this.storeSvc.set(StoreKey.SyncBookmarksToolbar, false)
           ])
         )
         .then(() => {
