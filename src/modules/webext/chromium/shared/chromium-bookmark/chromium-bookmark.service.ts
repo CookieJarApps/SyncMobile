@@ -32,50 +32,7 @@ export class ChromiumBookmarkService extends WebExtBookmarkService {
     // Get native container ids
     return this.getNativeContainerIds()
       .then((nativeContainerIds) => {
-        const otherBookmarksId = nativeContainerIds.get(BookmarkContainer.Other);
-        const toolbarBookmarksId = nativeContainerIds.get(BookmarkContainer.Toolbar);
-
-        // Clear other bookmarks
-        const clearOthers = browser.bookmarks
-          .getChildren(otherBookmarksId)
-          .then((results) => {
-            return this.$q.all(
-              results.map((child) => {
-                return this.removeNativeBookmarks(child.id);
-              })
-            );
-          })
-          .catch((err) => {
-            this.logSvc.logWarning('Error clearing other bookmarks');
-            throw err;
-          });
-
-        // Clear bookmarks toolbar if enabled
-        const clearToolbar = this.$q((resolve, reject) => {
-          return this.settingsSvc
-            .syncBookmarksToolbar()
-            .then((syncBookmarksToolbar) => {
-              if (!syncBookmarksToolbar) {
-                this.logSvc.logInfo('Not clearing toolbar');
-                resolve();
-                return;
-              }
-              return browser.bookmarks.getChildren(toolbarBookmarksId).then((results) => {
-                return this.$q.all(
-                  results.map((child) => {
-                    return this.removeNativeBookmarks(child.id);
-                  })
-                );
-              });
-            })
-            .then(resolve)
-            .catch((err) => {
-              this.logSvc.logWarning('Error clearing bookmarks toolbar');
-              reject(err);
-            });
-        });
-
-        return this.$q.all([clearOthers, clearToolbar]).then(() => {});
+        return this.$q.resolve();
       })
       .catch((err) => {
         throw new FailedRemoveNativeBookmarksException(undefined, err);
