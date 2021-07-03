@@ -1,4 +1,4 @@
-# xBrowserSync
+# SyncMobile for xBrowserSync
 
 ## Desktop browser web extensions and Android app
 
