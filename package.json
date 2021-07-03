@@ -26,7 +26,7 @@
     "build:firefox-mobile:dev": "npm run build:firefox -- -- --mode=development",
     "watch:firefox-mobile": "npm run build:firefox:dev -- --watch",
     "package:firefox-mobile": "npm run build:firefox && echo Packaging platform FIREFOX... && node ./scripts/update-build-number.js firefox && node ./scripts/create-zip-package.js firefox",
-    "postpackage:firefox-mobile": "echo Package saved to ./dist",
+    "postpackage:firefox-mobile": "echo Package saved to ./dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
