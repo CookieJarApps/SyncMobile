@@ -1,0 +1,74 @@
+@import '../../../../styles/modules/all';
+
+app-scan {
+  --color-button-fab-bg: #{$color-bg3-default};
+  --color-button-fab-text: #{$color-text2-default};
+
+  display: block;
+
+  @include theme-dark {
+    --color-button-fab-bg: #{$color-text3-dark};
+    --color-button-fab-text: #{$color-text1-dark};
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin: 1rem 0 0;
+    text-align: center;
+  }
+
+  .buttons {
+    flex: 0 8rem;
+
+    button.btn.btn-fab {
+      margin-right: 1.75rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.enabled {
+        background-color: var(--color-warning);
+      }
+    }
+  }
+
+  .target {
+    background: url('../../../../../res/images/scan.svg') 50% 50% no-repeat;
+    flex: 1;
+    height: 14rem;
+    opacity: 0.5;
+    width: 14rem;
+
+    &.error {
+      background-image: url('../../../../../res/images/scan_error.svg');
+    }
+  }
+
+  .validation {
+    font-size: 1rem;
+    margin-top: -2.5em;
+    padding: 0.25em 1em;
+    position: absolute;
+    top: 50%;
+  }
+
+  .view-content {
+    align-items: center;
+  }
+
+  @media (orientation: landscape) {
+    h3 {
+      margin: 0;
+    }
+
+    .buttons {
+      flex: 0 5rem;
+    }
+
+    .target {
+      height: 10rem;
+      width: 10rem;
+    }
+  }
+}
