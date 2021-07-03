@@ -110,97 +110,8 @@ export class FirefoxBookmarkService extends WebExtBookmarkService {
       });
   }
 
-  createNativeBookmarksFromBookmarks(bookmarks: Bookmark[]): ng.IPromise<number> {
-    // Get containers
-    const menuContainer = this.bookmarkHelperSvc.getContainer(BookmarkContainer.Menu, bookmarks);
-    const mobileContainer = this.bookmarkHelperSvc.getContainer(BookmarkContainer.Mobile, bookmarks);
-    const otherContainer = this.bookmarkHelperSvc.getContainer(BookmarkContainer.Other, bookmarks);
-    const toolbarContainer = this.bookmarkHelperSvc.getContainer(BookmarkContainer.Toolbar, bookmarks);
-
-    // Get native container ids
-    return this.getNativeContainerIds()
-      .then((nativeContainerIds) => {
-        const menuBookmarksId = nativeContainerIds.get(BookmarkContainer.Menu);
-        const mobileBookmarksId = nativeContainerIds.get(BookmarkContainer.Mobile);
-        const otherBookmarksId = nativeContainerIds.get(BookmarkContainer.Other);
-        const toolbarBookmarksId = nativeContainerIds.get(BookmarkContainer.Toolbar);
-
-        // Populate menu bookmarks
-        let populateMenu = this.$q.resolve(0);
-        if (menuContainer) {
-          populateMenu = browser.bookmarks
-            .getSubTree(menuBookmarksId)
-            .then(() => {
-              return this.createNativeBookmarkTree(menuBookmarksId, menuContainer.children);
-            })
-            .catch((err) => {
-              this.logSvc.logInfo('Error populating bookmarks menu.');
-              throw err;
-            });
-        }
-
-        // Populate mobile bookmarks
-        let populateMobile = this.$q.resolve(0);
-        if (mobileContainer) {
-          populateMobile = browser.bookmarks
-            .getSubTree(mobileBookmarksId)
-            .then(() => {
-              return this.createNativeBookmarkTree(mobileBookmarksId, mobileContainer.children);
-            })
-            .catch((err) => {
-              this.logSvc.logInfo('Error populating mobile bookmarks.');
-              throw err;
-            });
-        }
-
-        // Populate other bookmarks
-        let populateOther = this.$q.resolve(0);
-        if (otherContainer) {
-          populateOther = browser.bookmarks
-            .getSubTree(otherBookmarksId)
-            .then(() => {
-              return this.createNativeBookmarkTree(otherBookmarksId, otherContainer.children);
-            })
-            .catch((err) => {
-              this.logSvc.logInfo('Error populating other bookmarks.');
-              throw err;
-            });
-        }
-
-        // Populate bookmarks toolbar if enabled
-        const populateToolbar = this.$q<number>((resolve, reject) => {
-          if (!toolbarContainer) {
-            return resolve(0);
-          }
-
-          return this.settingsSvc
-            .syncBookmarksToolbar()
-            .then((syncBookmarksToolbar) => {
-              if (!syncBookmarksToolbar) {
-                this.logSvc.logInfo('Not populating toolbar');
-                resolve();
-                return;
-              }
-
-              return browser.bookmarks.getSubTree(toolbarBookmarksId).then(() => {
-                return this.createNativeBookmarkTree(toolbarBookmarksId, toolbarContainer.children);
-              });
-            })
-            .then(resolve)
-            .catch((err) => {
-              this.logSvc.logInfo('Error populating bookmarks toolbar.');
-              reject(err);
-            });
-        });
-
-        return this.$q.all([populateMenu, populateMobile, populateOther, populateToolbar]);
-      })
-      .then((totals) => {
-        // Move native unsupported containers into the correct order
-        return this.reorderUnsupportedContainers().then(() => {
-          return totals.filter(Boolean).reduce((a, b) => a + b, 0);
-        });
-      });
+  createNativeBookmarksFromBookmarks(): ng.IPromise<number> {
+    return this.methodNotApplicable();
   }
 
   createNativeSeparator(parentId: string): ng.IPromise<NativeBookmarks.BookmarkTreeNode> {
@@ -602,6 +513,11 @@ export class FirefoxBookmarkService extends WebExtBookmarkService {
 
     // Queue sync
     this.syncChange(changeInfo);
+    return this.$q.resolve();
+  }
+
+  methodNotApplicable(): ng.IPromise<any> {
+    // Unused for this platform
     return this.$q.resolve();
   }
 }
