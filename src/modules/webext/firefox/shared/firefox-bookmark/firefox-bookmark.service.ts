@@ -2,21 +2,13 @@ import angular from 'angular';
 import { Injectable } from 'angular-ts-decorators';
 import autobind from 'autobind-decorator';
 import { Bookmarks as NativeBookmarks, browser } from 'webextension-polyfill-ts';
-import { BookmarkChangeType, BookmarkContainer } from '../../../../shared/bookmark/bookmark.enum';
-import {
-  AddNativeBookmarkChangeData,
-  Bookmark,
-  BookmarkChange,
-  ModifyNativeBookmarkChangeData,
-  MoveNativeBookmarkChangeData
-} from '../../../../shared/bookmark/bookmark.interface';
+import { BookmarkContainer } from '../../../../shared/bookmark/bookmark.enum';
+import { Bookmark } from '../../../../shared/bookmark/bookmark.interface';
 import {
   ContainerNotFoundException,
-  Exception,
   FailedCreateNativeBookmarksException,
   FailedRemoveNativeBookmarksException
 } from '../../../../shared/exception/exception';
-import { WebpageMetadata } from '../../../../shared/global-shared.interface';
 import { WebExtBookmarkService } from '../../../shared/webext-bookmark/webext-bookmark.service';
 
 @autobind
@@ -126,62 +118,15 @@ export class FirefoxBookmarkService extends WebExtBookmarkService {
   }
 
   disableEventListeners(): ng.IPromise<void> {
-    return this.$q
-      .all([
-        browser.bookmarks.onCreated.removeListener(this.onNativeBookmarkCreated),
-        browser.bookmarks.onRemoved.removeListener(this.onNativeBookmarkRemoved),
-        browser.bookmarks.onChanged.removeListener(this.onNativeBookmarkChanged),
-        browser.bookmarks.onMoved.removeListener(this.onNativeBookmarkMoved)
-      ])
-      .then(() => {})
-      .catch((err) => {
-        this.logSvc.logWarning('Failed to disable event listeners');
-        throw new Exception(undefined, err);
-      });
+    return this.$q.resolve();
   }
 
   enableEventListeners(): ng.IPromise<void> {
-    return this.disableEventListeners()
-      .then(() => {
-        return this.utilitySvc.isSyncEnabled();
-      })
-      .then((syncEnabled) => {
-        if (!syncEnabled) {
-          return;
-        }
-        browser.bookmarks.onCreated.addListener(this.onNativeBookmarkCreated);
-        browser.bookmarks.onRemoved.addListener(this.onNativeBookmarkRemoved);
-        browser.bookmarks.onChanged.addListener(this.onNativeBookmarkChanged);
-        browser.bookmarks.onMoved.addListener(this.onNativeBookmarkMoved);
-      })
-      .catch((err) => {
-        this.logSvc.logWarning('Failed to enable event listeners');
-        throw new Exception(undefined, err);
-      });
+    return this.$q.resolve();
   }
 
   ensureContainersExist(bookmarks: Bookmark[]): Bookmark[] {
-    if (angular.isUndefined(bookmarks)) {
-      return;
-    }
-
-    // Add supported containers
-    const bookmarksToReturn = angular.copy(bookmarks);
-    this.bookmarkHelperSvc.getContainer(BookmarkContainer.Menu, bookmarksToReturn, true);
-    this.bookmarkHelperSvc.getContainer(BookmarkContainer.Mobile, bookmarksToReturn, true);
-    this.bookmarkHelperSvc.getContainer(BookmarkContainer.Other, bookmarksToReturn, true);
-    this.bookmarkHelperSvc.getContainer(BookmarkContainer.Toolbar, bookmarksToReturn, true);
-
-    // Return sorted containers
-    return bookmarksToReturn.sort((x, y) => {
-      if (x.title < y.title) {
-        return -1;
-      }
-      if (x.title > y.title) {
-        return 1;
-      }
-      return 0;
-    });
+    return bookmarks;
   }
 
   fixMultipleMoveOldIndexes(): void {
@@ -448,71 +393,14 @@ export class FirefoxBookmarkService extends WebExtBookmarkService {
   }
 
   syncNativeBookmarkChanged(id: string): ng.IPromise<void> {
-    // Retrieve full bookmark info
-    return browser.bookmarks.getSubTree(id).then((results) => {
-      const changedBookmark = results[0];
-
-      // Create change info
-      const data: ModifyNativeBookmarkChangeData = {
-        nativeBookmark: changedBookmark
-      };
-      const changeInfo: BookmarkChange = {
-        changeData: data,
-        type: BookmarkChangeType.Modify
-      };
-
-      // Queue sync
-      this.syncChange(changeInfo);
-    });
+    return this.$q.resolve();
   }
 
   syncNativeBookmarkCreated(id: string, nativeBookmark: NativeBookmarks.BookmarkTreeNode): ng.IPromise<void> {
-    // Create change info
-    const data: AddNativeBookmarkChangeData = {
-      nativeBookmark
-    };
-    const changeInfo: BookmarkChange = {
-      changeData: data,
-      type: BookmarkChangeType.Add
-    };
-
-    // If bookmark is not folder or separator, get page metadata from current tab
-    return (
-      nativeBookmark.url && !this.bookmarkHelperSvc.nativeBookmarkIsSeparator(nativeBookmark)
-        ? this.platformSvc.getPageMetadata()
-        : this.$q.resolve<WebpageMetadata>(null)
-    ).then((metadata) => {
-      // Add metadata if bookmark is current tab location
-      if (metadata && nativeBookmark.url === metadata.url) {
-        (changeInfo.changeData as AddNativeBookmarkChangeData).nativeBookmark.title = this.utilitySvc.stripTags(
-          metadata.title
-        );
-        (changeInfo.changeData as AddNativeBookmarkChangeData).nativeBookmark.description = this.utilitySvc.stripTags(
-          metadata.description
-        );
-        (changeInfo.changeData as AddNativeBookmarkChangeData).nativeBookmark.tags =
-          this.utilitySvc.getTagArrayFromText(metadata.tags);
-      }
-
-      // Queue sync
-      this.syncChange(changeInfo);
-      return this.$q.resolve();
-    });
+    return this.$q.resolve();
   }
 
   syncNativeBookmarkMoved(id: string, moveInfo: NativeBookmarks.OnMovedMoveInfoType): ng.IPromise<void> {
-    // Create change info
-    const data: MoveNativeBookmarkChangeData = {
-      ...moveInfo,
-      id
-    };
-    const changeInfo: BookmarkChange = {
-      changeData: data,
-      type: BookmarkChangeType.Move
-    };
-
-    // Queue sync
-    this.syncChange(changeInfo);
     return this.$q.resolve();
   }
 

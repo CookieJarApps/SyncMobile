@@ -35,9 +35,6 @@ export abstract class WebExtPlatformService implements PlatformService {
   workingSvc: WorkingService;
 
   contentScriptUrl = 'assets/webpage-metadata-collecter.js';
-  optionalPermissions = {
-    origins: ['http://*/', 'https://*/']
-  };
   refreshInterfaceTimeout: any;
 
   static $inject = [
@@ -90,7 +87,7 @@ export abstract class WebExtPlatformService implements PlatformService {
   checkOptionalNativePermissions(): ng.IPromise<boolean> {
     // Check if extension has optional permissions
     return this.$q.resolve().then(() => {
-      return browser.permissions.contains(this.optionalPermissions);
+      return true;
     });
   }
 

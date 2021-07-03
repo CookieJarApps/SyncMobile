@@ -26,7 +26,6 @@ import { SyncType } from '../../../shared/sync/sync.enum';
 import { Sync } from '../../../shared/sync/sync.interface';
 import { SyncService } from '../../../shared/sync/sync.service';
 import { UtilityService } from '../../../shared/utility/utility.service';
-import { BookmarkIdMapping } from '../bookmark-id-mapper/bookmark-id-mapper.interface';
 import { BookmarkIdMapperService } from '../bookmark-id-mapper/bookmark-id-mapper.service';
 
 @autobind
@@ -105,122 +104,8 @@ export abstract class WebExtBookmarkService implements BookmarkService {
     } as UpdateBookmarksResult;
   }
 
-  buildIdMappings(bookmarks: Bookmark[]): ng.IPromise<void> {
-    const mapIds = (
-      nativeBookmarks: NativeBookmarks.BookmarkTreeNode[],
-      syncedBookmarks: Bookmark[]
-    ): BookmarkIdMapping[] => {
-      return nativeBookmarks.reduce((acc, val, index) => {
-        // Create mapping for the current node
-        const mapping = this.bookmarkIdMapperSvc.createMapping(syncedBookmarks[index].id, val.id);
-        acc.push(mapping);
-
-        // Process child nodes
-        return val.children?.length ? acc.concat(mapIds(val.children, syncedBookmarks[index].children)) : acc;
-      }, [] as BookmarkIdMapping[]);
-    };
-
-    // Get native container ids
-    return this.getNativeContainerIds()
-      .then((nativeContainerIds) => {
-        const menuBookmarksId = nativeContainerIds.get(BookmarkContainer.Menu);
-        const mobileBookmarksId = nativeContainerIds.get(BookmarkContainer.Mobile);
-        const otherBookmarksId = nativeContainerIds.get(BookmarkContainer.Other);
-        const toolbarBookmarksId = nativeContainerIds.get(BookmarkContainer.Toolbar);
-
-        // Map menu bookmarks
-        const getMenuBookmarks =
-          menuBookmarksId == null
-            ? this.$q.resolve([] as BookmarkIdMapping[])
-            : browser.bookmarks.getSubTree(menuBookmarksId).then((subTree) => {
-                const menuBookmarks = subTree[0];
-                if (!menuBookmarks.children?.length) {
-                  return [] as BookmarkIdMapping[];
-                }
-
-                // Map ids between nodes and synced container children
-                const menuBookmarksContainer = bookmarks.find((x) => {
-                  return x.title === BookmarkContainer.Menu;
-                });
-                return menuBookmarksContainer?.children?.length
-                  ? mapIds(menuBookmarks.children, menuBookmarksContainer.children)
-                  : ([] as BookmarkIdMapping[]);
-              });
-
-        // Map mobile bookmarks
-        const getMobileBookmarks =
-          mobileBookmarksId == null
-            ? this.$q.resolve([] as BookmarkIdMapping[])
-            : browser.bookmarks.getSubTree(mobileBookmarksId).then((subTree) => {
-                const mobileBookmarks = subTree[0];
-                if (!mobileBookmarks.children?.length) {
-                  return [] as BookmarkIdMapping[];
-                }
-
-                // Map ids between nodes and synced container children
-                const mobileBookmarksContainer = bookmarks.find((x) => {
-                  return x.title === BookmarkContainer.Mobile;
-                });
-                return mobileBookmarksContainer?.children?.length
-                  ? mapIds(mobileBookmarks.children, mobileBookmarksContainer.children)
-                  : ([] as BookmarkIdMapping[]);
-              });
-
-        // Map other bookmarks
-        const getOtherBookmarks =
-          otherBookmarksId == null
-            ? this.$q.resolve([] as BookmarkIdMapping[])
-            : browser.bookmarks.getSubTree(otherBookmarksId).then((subTree) => {
-                const otherBookmarks = subTree[0];
-                if (!otherBookmarks.children?.length) {
-                  return [] as BookmarkIdMapping[];
-                }
-
-                // Remove any unsupported container folders present
-                const nodes = otherBookmarks.children.filter((x) => !this.unsupportedContainers.includes(x.title));
-
-                // Map ids between nodes and synced container children
-                const otherBookmarksContainer = bookmarks.find((x) => {
-                  return x.title === BookmarkContainer.Other;
-                });
-                return otherBookmarksContainer?.children?.length
-                  ? mapIds(nodes, otherBookmarksContainer.children)
-                  : ([] as BookmarkIdMapping[]);
-              });
-
-        // Map toolbar bookmarks if enabled
-        const getToolbarBookmarks =
-          toolbarBookmarksId == null
-            ? this.$q.resolve([] as BookmarkIdMapping[])
-            : browser.bookmarks.getSubTree(toolbarBookmarksId).then((results) => {
-                return this.settingsSvc.syncBookmarksToolbar().then((syncBookmarksToolbar) => {
-                  const toolbarBookmarks = results[0];
-
-                  if (!syncBookmarksToolbar || !toolbarBookmarks.children?.length) {
-                    return [] as BookmarkIdMapping[];
-                  }
-
-                  // Map ids between nodes and synced container children
-                  const toolbarBookmarksContainer = bookmarks.find((x) => {
-                    return x.title === BookmarkContainer.Toolbar;
-                  });
-                  return toolbarBookmarksContainer?.children?.length
-                    ? mapIds(toolbarBookmarks.children, toolbarBookmarksContainer.children)
-                    : ([] as BookmarkIdMapping[]);
-                });
-              });
-
-        return this.$q.all([getMenuBookmarks, getMobileBookmarks, getOtherBookmarks, getToolbarBookmarks]);
-      })
-      .then((results) => {
-        // Combine all mappings
-        const combinedMappings = results.reduce((acc, val) => {
-          return acc.concat(val);
-        }, []);
-
-        // Save mappings
-        return this.bookmarkIdMapperSvc.set(combinedMappings);
-      });
+  buildIdMappings(): ng.IPromise<void> {
+    return this.methodNotApplicable();
   }
 
   checkIfBookmarkChangeShouldBeSynced(changedBookmark: Bookmark, bookmarks: Bookmark[]): ng.IPromise<boolean> {
@@ -517,17 +402,7 @@ export abstract class WebExtBookmarkService implements BookmarkService {
     changeType: BookmarkChangeType,
     changeInfo: BookmarkMetadata
   ): ng.IPromise<void> {
-    // Check the change type and process native bookmark changes
-    switch (changeType) {
-      case BookmarkChangeType.Add:
-        return this.processChangeTypeAddOnNativeBookmarks(id, changeInfo);
-      case BookmarkChangeType.Modify:
-        return this.processChangeTypeModifyOnNativeBookmarks(id, changeInfo);
-      case BookmarkChangeType.Remove:
-        return this.processChangeTypeRemoveOnNativeBookmarks(id);
-      default:
-        throw new Exceptions.AmbiguousSyncRequestException();
-    }
+    return this.methodNotApplicable();
   }
 
   processChangeTypeAddOnBookmarks(
@@ -924,29 +799,7 @@ export abstract class WebExtBookmarkService implements BookmarkService {
   }
 
   processNativeChangeOnBookmarks(changeInfo: BookmarkChange, bookmarks: Bookmark[]): ng.IPromise<Bookmark[]> {
-    switch (changeInfo.type) {
-      case BookmarkChangeType.Add:
-        return this.processChangeTypeAddOnBookmarks(bookmarks, changeInfo.changeData as AddNativeBookmarkChangeData);
-      case BookmarkChangeType.ChildrenReordered:
-        return this.processChangeTypeChildrenReorderedOnBookmarks(
-          bookmarks,
-          changeInfo.changeData as ReorderNativeBookmarkChangeData
-        );
-      case BookmarkChangeType.Modify:
-        return this.processChangeTypeModifyOnBookmarks(
-          bookmarks,
-          changeInfo.changeData as ModifyNativeBookmarkChangeData
-        );
-      case BookmarkChangeType.Move:
-        return this.processChangeTypeMoveOnBookmarks(bookmarks, changeInfo.changeData as MoveNativeBookmarkChangeData);
-      case BookmarkChangeType.Remove:
-        return this.processChangeTypeRemoveOnBookmarks(
-          bookmarks,
-          changeInfo.changeData as RemoveNativeBookmarkChangeData
-        );
-      default:
-        throw new Exceptions.AmbiguousSyncRequestException();
-    }
+    return this.methodNotApplicable();
   }
 
   queueNativeBookmarkEvent(changeType: BookmarkChangeType, ...eventArgs: any[]): void {
@@ -1070,5 +923,10 @@ export abstract class WebExtBookmarkService implements BookmarkService {
           throw new Exceptions.FailedGetNativeBookmarksException(undefined, err);
         });
     });
+  }
+
+  methodNotApplicable(): ng.IPromise<any> {
+    // Unused for this platform
+    return this.$q.resolve();
   }
 }

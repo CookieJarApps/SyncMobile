@@ -111,17 +111,10 @@ export abstract class WebExtAppHelperService extends AppHelperService {
   }
 
   removePermissions(): ng.IPromise<void> {
-    // Remove optional permissions
-    return browser.permissions.remove(this.platformSvc.optionalPermissions).then(() => {
-      this.logSvc.logInfo('Optional permissions removed');
-    });
+    return this.$q.resolve();
   }
 
   requestPermissions(): ng.IPromise<boolean> {
-    // Request optional permissions
-    return browser.permissions.request(this.platformSvc.optionalPermissions).then((granted) => {
-      this.logSvc.logInfo(`Optional permissions ${!granted ? 'not ' : ''}granted`);
-      return granted;
-    });
+    return this.$q.resolve(true);
   }
 }

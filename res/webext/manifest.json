@@ -34,9 +34,7 @@
     "notifications",
     "storage",
     "tabs",
-    "unlimitedStorage"
-  ],
-  "optional_permissions": [
+    "unlimitedStorage",
     "http://*/",
     "https://*/"
   ]
