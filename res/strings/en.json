@@ -65,7 +65,7 @@
     },
     "Title": {
       "key": "App_Title",
-      "default": "xBrowserSync"
+      "default": "SyncMobile for xBrowserSync"
     }
   },
   "Bookmarks": {
