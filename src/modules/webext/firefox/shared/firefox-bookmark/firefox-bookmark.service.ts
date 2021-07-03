@@ -6,8 +6,7 @@ import { BookmarkContainer } from '../../../../shared/bookmark/bookmark.enum';
 import { Bookmark } from '../../../../shared/bookmark/bookmark.interface';
 import {
   ContainerNotFoundException,
-  FailedCreateNativeBookmarksException,
-  FailedRemoveNativeBookmarksException
+  FailedCreateNativeBookmarksException
 } from '../../../../shared/exception/exception';
 import { WebExtBookmarkService } from '../../../shared/webext-bookmark/webext-bookmark.service';
 
@@ -18,13 +17,7 @@ export class FirefoxBookmarkService extends WebExtBookmarkService {
 
   clearNativeBookmarks(): ng.IPromise<void> {
     // Get native container ids
-    return this.getNativeContainerIds()
-      .then((nativeContainerIds) => {
-        return this.$q.resolve();
-      })
-      .catch((err) => {
-        throw new FailedRemoveNativeBookmarksException(undefined, err);
-      });
+    return this.$q.resolve();
   }
 
   createNativeBookmarksFromBookmarks(): ng.IPromise<number> {
