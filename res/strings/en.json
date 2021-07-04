@@ -567,8 +567,8 @@
       },
       "Welcome": {
         "key": "View_Help_Welcome",
-        "default": "<h4>Welcome to SyncMobile for xBrowserSync!</h4><p>SyncMobile for xBrowserSync is a free and open-source alternative to browser sync services offered by Google, Mozilla, Opera and others, that respects your privacy and gives you complete anonymity (check out the <a href='https://link.xbrowsersync.org/www' class='new-tab'>website</a> for more info).</p><p>Take a moment to read through this help guide to familiarise yourself with xBrowserSync, using the paging links below or the arrow keys to move between pages.</p><p>Please note: xBrowserSync currently only syncs bookmarks. Syncing of additional browser data will be added in future versions, check out the development <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>roadmap</a> to see what’s planned.</p>",
-        "android": "<h4>Welcome to SyncMobile for xBrowserSync!</h4><p>SyncMobile for xBrowserSync is a free and open-source alternative to browser sync services offered by Google, Mozilla, Opera and others, that respects your privacy and gives you complete anonymity (check out the <a href='https://link.xbrowsersync.org/www' class='new-tab'>website</a> for more info).</p><p>Take a moment to read through this help guide to familiarise yourself with xBrowserSync, using the paging links below or swiping to move between pages.</p><p>Please note: xBrowserSync currently only syncs bookmarks. Syncing of additional browser data will be added in future versions, check out the development <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>roadmap</a> to see what’s planned.</p>"
+        "default": "<h4>Welcome to SyncMobile for xBrowserSync!</h4><p>SyncMobile for xBrowserSync is an unofficial client (making the add-on work on GeckoView Android browsers) for xBrowserSync, a free and open-source alternative to browser sync services offered by Google, Mozilla, Opera and others, that respects your privacy and gives you complete anonymity (check out the <a href='https://link.xbrowsersync.org/www' class='new-tab'>website</a> for more info).</p><p>Take a moment to read through this help guide to familiarise yourself with xBrowserSync, using the paging links below or the arrow keys to move between pages.</p><p>Please note: xBrowserSync currently only syncs bookmarks. Syncing of additional browser data will be added in future versions, check out the development <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>roadmap</a> to see what’s planned.</p>",
+        "android": "<h4>Welcome to SyncMobile for xBrowserSync!</h4><p>SyncMobile for xBrowserSync is an unofficial client (making the add-on work on GeckoView Android browsers) for xBrowserSync, free and open-source alternative to browser sync services offered by Google, Mozilla, Opera and others, that respects your privacy and gives you complete anonymity (check out the <a href='https://link.xbrowsersync.org/www' class='new-tab'>website</a> for more info).</p><p>Take a moment to read through this help guide to familiarise yourself with xBrowserSync, using the paging links below or swiping to move between pages.</p><p>Please note: xBrowserSync currently only syncs bookmarks. Syncing of additional browser data will be added in future versions, check out the development <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>roadmap</a> to see what’s planned.</p>"
       }
     },
     "Login": {
@@ -1246,6 +1246,10 @@
       "Support": {
         "key": "View_Settings_Support",
         "default": "Support xBrowserSync"
+      },
+      "SyncMobile": {
+        "key": "View_Settings_SyncMobile",
+        "default": "SyncMobile is an unofficial client for xBrowserSync designed for GeckoView-based Android browsers, built by CookieJarApps on top of the existing xBrowserSync desktop add-on. This client is not affiliated with xBrowserSync in any way."
       }
     },
     "Support": {
@@ -1255,7 +1259,7 @@
       },
       "Content": {
         "key": "View_Support_Content",
-        "default": "<p>We want to make xBrowserSync the number one browser sync tool, but there’s still a lot to do:</p><ul><li>Add syncing of browser tabs and history</li><li>Support all major desktop browsers</li><li>Translate into other languages</li><li>And <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>much more</a>!</li></ul><p>Only with your support can we continue to improve xBrowserSync and ensure that it remains effective in protecting online privacy and enhancing productivity.</p>"
+        "default": "<p>xBrowserSync wants to become the number one browser sync tool, but there’s still a lot to do:</p><ul><li>Add syncing of browser tabs and history</li><li>Support all major desktop browsers</li><li>Translate into other languages</li><li>And <a href='https://link.xbrowsersync.org/roadmap' class='new-tab'>much more</a>!</li></ul><p>Only with your support can xBrowserSync continue to improve the service and ensure that it remains effective in protecting online privacy and enhancing productivity.</p>"
       },
       "Cryptos": {
         "key": "View_Support_Cryptos",

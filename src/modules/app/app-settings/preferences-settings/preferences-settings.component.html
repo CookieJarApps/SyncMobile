@@ -1,35 +1,6 @@
 <div class="well well-sm">
   <h4>{{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.Title) }}</h4>
   <div class="panel-content">
-    <div class="form-group setting-group" ng-if="!vm.utilitySvc.isMobilePlatform(vm.platformSvc.platformName)">
-      <div class="setting-title">
-        <label>{{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.SyncToolbar.Label) }}</label>
-        <div class="animate-fade-in">
-          <div class="checkbox" ng-click="vm.utilitySvc.handleEvent(vm.toggleSyncBookmarksToolbar)">
-            <input type="checkbox" id="syncBookmarksToolbar" ng-model="vm.settings.syncBookmarksToolbar" />
-            <label for="syncBookmarksToolbar" ng-class="{ 'animate': true }"
-                   ng-if="vm.settings.syncBookmarksToolbar !== undefined"></label>
-          </div>
-        </div>
-      </div>
-      <p class="description">
-        {{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.SyncToolbar.Description) }}
-      </p>
-      <div class="confirm animate-fade-in" ng-show="vm.displaySyncBookmarksToolbarConfirmation">
-        <div ng-bind-html="vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.SyncToolbar.Confirmation)">
-        </div>
-        <div class="buttons">
-          <button type="button" class="btn btn-default btn-confirm-sync-toolbar"
-                  ng-click="vm.utilitySvc.handleEvent(vm.confirmSyncBookmarksToolbar)">
-            {{ vm.platformSvc.getI18nString(vm.Strings.Button.Confirm) }}
-          </button>
-          <button type="button" class="btn btn-default"
-                  ng-click="vm.utilitySvc.handleEvent(vm.cancelSyncBookmarksToolbar)">
-            {{ vm.platformSvc.getI18nString(vm.Strings.Button.Deny) }}
-          </button>
-        </div>
-      </div>
-    </div>
     <div class="form-group setting-group">
       <div class="setting-title">
         <label>{{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.DefaultToFolderView.Label) }}</label>
@@ -44,7 +15,7 @@
       <p class="description">
         {{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.DefaultToFolderView.Description) }}
     </div>
-    <div class="form-group setting-group" ng-if="vm.utilitySvc.isMobilePlatform(vm.platformSvc.platformName)">
+    <div class="form-group setting-group">
       <div class="setting-title">
         <label>{{ vm.platformSvc.getI18nString(vm.Strings.View.Settings.Prefs.SearchBar.Label) }}</label>
         <div>
