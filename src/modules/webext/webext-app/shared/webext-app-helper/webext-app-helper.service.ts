@@ -56,7 +56,7 @@ export abstract class WebExtAppHelperService extends AppHelperService {
   }
 
   confirmBeforeSyncing(): boolean {
-    return true;
+    return false;
   }
 
   copyTextToClipboard(text: string): ng.IPromise<void> {

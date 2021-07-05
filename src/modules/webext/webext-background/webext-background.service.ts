@@ -22,6 +22,7 @@ import { Sync, SyncResult } from '../../shared/sync/sync.interface';
 import { SyncService } from '../../shared/sync/sync.service';
 import { UpgradeService } from '../../shared/upgrade/upgrade.service';
 import { UtilityService } from '../../shared/utility/utility.service';
+import { FirefoxBookmarkService } from '../firefox/shared/firefox-bookmark/firefox-bookmark.service';
 import { BookmarkIdMapperService } from '../shared/bookmark-id-mapper/bookmark-id-mapper.service';
 import { DownloadFileMessage, EnableAutoBackUpMessage, Message, SyncBookmarksMessage } from '../webext.interface';
 
@@ -37,6 +38,7 @@ export class WebExtBackgroundService {
   backupRestoreSvc: BackupRestoreService;
   bookmarkIdMapperSvc: BookmarkIdMapperService;
   bookmarkHelperSvc: BookmarkHelperService;
+  bookmarkSvc: FirefoxBookmarkService;
   logSvc: LogService;
   networkSvc: NetworkService;
   platformSvc: PlatformService;
@@ -74,6 +76,7 @@ export class WebExtBackgroundService {
     BackupRestoreSvc: BackupRestoreService,
     BookmarkHelperSvc: BookmarkHelperService,
     BookmarkIdMapperSvc: BookmarkIdMapperService,
+    BookmarkSvc: FirefoxBookmarkService,
     LogSvc: LogService,
     NetworkSvc: NetworkService,
     PlatformSvc: PlatformService,
@@ -90,6 +93,7 @@ export class WebExtBackgroundService {
     this.backupRestoreSvc = BackupRestoreSvc;
     this.bookmarkIdMapperSvc = BookmarkIdMapperSvc;
     this.bookmarkHelperSvc = BookmarkHelperSvc;
+    this.bookmarkSvc = BookmarkSvc;
     this.logSvc = LogSvc;
     this.networkSvc = NetworkSvc;
     this.platformSvc = PlatformSvc;
@@ -390,6 +394,10 @@ export class WebExtBackgroundService {
         case MessageCommand.SyncBookmarks:
           action = this.runSyncBookmarksCommand(message as SyncBookmarksMessage);
           break;
+        // Trigger bookmarks restore
+        case MessageCommand.RestoreBookmarks:
+          action = this.runRestoreBookmarksCommand(message as SyncBookmarksMessage);
+          break;
         // Get current sync in progress
         case MessageCommand.GetCurrentSync:
           action = this.runGetCurrentSyncCommand();
@@ -405,6 +413,14 @@ export class WebExtBackgroundService {
         // Download file
         case MessageCommand.DownloadFile:
           action = this.runDownloadFileCommand(message as DownloadFileMessage);
+          break;
+        // Enable event listeners
+        case MessageCommand.EnableEventListeners:
+          action = this.runEnableEventListenersCommand();
+          break;
+        // Disable event listeners
+        case MessageCommand.DisableEventListeners:
+          action = this.runDisableEventListenersCommand();
           break;
         // Enable auto back up
         case MessageCommand.EnableAutoBackUp:
@@ -428,6 +444,10 @@ export class WebExtBackgroundService {
 
   runDisableAutoBackUpCommand(): ng.IPromise<void> {
     return browser.alarms.clear(Globals.Alarms.AutoBackUp.Name).then(() => {});
+  }
+
+  runDisableEventListenersCommand(): ng.IPromise<void> {
+    return this.bookmarkSvc.disableEventListeners();
   }
 
   runDisableSyncCommand(): ng.IPromise<void> {
@@ -523,12 +543,24 @@ export class WebExtBackgroundService {
     });
   }
 
+  runEnableEventListenersCommand(): ng.IPromise<void> {
+    return this.bookmarkSvc.enableEventListeners();
+  }
+
   runGetCurrentSyncCommand(): ng.IPromise<Sync> {
     return this.$q.resolve(this.syncSvc.getCurrentSync());
   }
 
   runGetSyncQueueLengthCommand(): ng.IPromise<number> {
     return this.$q.resolve(this.syncSvc.getSyncQueueLength());
+  }
+
+  runRestoreBookmarksCommand(message: SyncBookmarksMessage): ng.IPromise<SyncResult> {
+    const { sync } = message;
+    return this.bookmarkSvc.disableEventListeners().then(() => {
+      // Queue sync
+      return this.syncSvc.queueSync(sync).then(() => ({ success: true }));
+    });
   }
 
   runSyncBookmarksCommand(message: SyncBookmarksMessage): ng.IPromise<SyncResult> {

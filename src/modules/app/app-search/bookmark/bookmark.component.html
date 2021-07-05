@@ -50,6 +50,6 @@
         title="{{ vm.platformSvc.getI18nString(vm.Strings.Button.EditBookmark) }}"
         ng-if="vm.enableEditButton && vm.bookmark.url && !vm.isSeparator(vm.bookmark)"
         ng-click="vm.utilitySvc.handleEvent(vm.editBookmark(), $event,  vm.bookmark)">
-  <i class="fas fa-edit" aria-hidden="true"></i>
+  <i class="fas fa-edit"></i>
   <span class="sr-only">{{ vm.platformSvc.getI18nString(vm.Strings.Button.EditBookmark) }}</span>
 </button>
