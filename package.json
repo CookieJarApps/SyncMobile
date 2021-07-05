@@ -1,19 +1,19 @@
 {
-  "name": "xbrowsersync-app",
-  "description": "The xBrowserSync client app.",
+  "name": "syncmobile",
+  "description": "Unofficial xBrowserSync client.",
   "version": "1.6.0",
-  "author": "xBrowserSync",
+  "author": "SyncMobile for xBrowserSync",
   "license": "GPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xbrowsersync/app.git"
+    "url": "https://github.com/cookiejarapps/syncmobile.git"
   },
   "bugs": {
-    "url": "https://github.com/xbrowsersync/app/issues"
+    "url": "https://github.com/cookiejarapps/syncmobile/issues"
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "{019b606a-6f61-4d01-af2a-cea528f606da}",
+      "id": "syncmobile@cookiejarapps.com",
       "strict_min_version": "75.0"
     }
   },
@@ -27,18 +27,12 @@
     "watch:chromium": "npm run build:chromium:dev -- --watch",
     "package:chromium": "npm run build:chromium && echo Packaging platform CHROMIUM... && node ./scripts/update-build-number.js chromium && node ./scripts/create-zip-package.js chromium",
     "postpackage:chromium": "echo Package saved to ./dist",
-    "webpack:firefox": "webpack --config ./webpack/firefox.config.js",
-    "build:firefox": "npm run lint:fix && echo Building platform FIREFOX to ./build/firefox... && rimraf ./build/firefox && npm run webpack:firefox",
-    "build:firefox:dev": "npm run build:firefox -- -- --mode=development",
-    "watch:firefox": "npm run build:firefox:dev -- --watch",
-    "package:firefox": "npm run build:firefox && echo Packaging platform FIREFOX... && node ./scripts/update-build-number.js firefox && node ./scripts/create-zip-package.js firefox",
-    "postpackage:firefox": "echo Package saved to ./dist",
-    "webpack:android": "webpack --config ./webpack/android.config.js",
-    "build:android": "npm run lint:fix && echo Building platform ANDROID to ./build/android... && rimraf ./build/android && npm run webpack:android",
-    "build:android:dev": "npm run build:android -- -- --mode=development",
-    "watch:android": "npm run build:android:dev -- --watch",
-    "package:android": "npm run build:android && echo Packaging platform ANDROID... && node ./scripts/update-build-number.js android && node ./scripts/create-apk-package.js",
-    "postpackage:android": "echo Package saved to ./dist"
+    "webpack:firefox-mobile": "webpack --config ./webpack/firefox-mobile.config.js",
+    "build:firefox-mobile": "npm run lint:fix && echo Building platform FIREFOX to ./build/firefox-mobile... && rimraf ./build/firefox-mobile && npm run webpack:firefox-mobile",
+    "build:firefox-mobile:dev": "npm run build:firefox-mobile -- -- --mode=development",
+    "watch:firefox-mobile": "npm run build:firefox-mobile:dev -- --watch",
+    "package:firefox-mobile": "npm run build:firefox-mobile && echo Packaging platform FIREFOX... && node ./scripts/update-build-number.js firefox-mobile && node ./scripts/create-zip-package.js firefox-mobile",
+    "postpackage:firefox-mobile": "echo Package saved to ./dist"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",

@@ -15,7 +15,7 @@ module.exports = (env, argv) => {
     },
     output: {
       ...webExtConfig.output,
-      path: Path.resolve(__dirname, '../build/firefox/assets')
+      path: Path.resolve(__dirname, '../build/firefox-mobile/assets')
     }
   };
 };
