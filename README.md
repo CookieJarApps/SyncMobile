@@ -1,6 +1,6 @@
 # SyncMobile for xBrowserSync
 
-xBrowserSync Firefox add-on modified to remove browser bookmark editing so it works when installed in GeckoView-based mobile browsers.
+xBrowserSync Firefox add-on modified to remove browser bookmark editing so it works when installed in GeckoView-based mobile browsers. This add-on does not sync browser bookmarks and only allows you to access bookmarks synced with xBrowserSync from other browsers. This add-on is not affiliated with xBrowserSync in any way, but is based on the code of their desktop add-on and Android app.
 
 ## Prerequisites
 
